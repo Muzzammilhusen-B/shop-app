@@ -1,22 +1,21 @@
-import React, {useState} from "react";
-import {Button} from "antd";
-import api from "../apis/api";
+import React from "react";
+import {Router, Switch, Route} from "react-router-dom";
+import history from "../history";
+import "antd/dist/antd.css";
+import LogIn from "./Login";
+import Registration from "./Registration";
+import LoginHome from "./LoginHome";
 
 const App = () => {
-  const [show, setShow] = useState([]);
-  const showProduct = async (e) => {
-    e.preventDefault();
-    const {data} = await api.get("/products");
-    console.log("response", data);
-    setShow(data);
-  };
   return (
     <div>
-      App
-      <Button onClick={showProduct}>Show</Button>
-      {show.map((el) => (
-        <p key={el.id}>{el.name}</p>
-      ))}
+      <Router history={history}>
+        <Switch>
+          <Route path="/" exact component={LogIn} />
+          <Route path="/registration" exact component={Registration} />
+          <Route path="/loginhome" exact component={LoginHome} />
+        </Switch>
+      </Router>
     </div>
   );
 };

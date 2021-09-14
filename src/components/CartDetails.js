@@ -13,7 +13,9 @@ import {
   Divider,
   Menu,
   Badge,
-  Space,
+  Row,
+  Col,
+  Alert,
 } from "antd";
 import {
   DeleteOutlined,
@@ -24,7 +26,7 @@ import {
   CaretUpOutlined,
 } from "@ant-design/icons";
 import {Link} from "react-router-dom";
-import {remove, addQuantity, subQuantity} from "../actions";
+import {remove, addQuantity, subQuantity, fetchItems} from "../actions";
 import history from "../history";
 
 const {Meta} = Card;
@@ -38,7 +40,9 @@ class CartDetails extends React.Component {
   state = {
     amount: 0,
   };
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.fetchItems();
+  }
   redirectLoginHome = () => {
     history.push("/loginhome");
   };
@@ -63,6 +67,7 @@ class CartDetails extends React.Component {
     let product =
       this.props.addedItems.length && this.props.total !== 0 ? (
         this.props.addedItems.map((item) => {
+          //   console.log("qunatity", item.quantity);
           return (
             <Card
               key={item.id}
@@ -104,22 +109,21 @@ class CartDetails extends React.Component {
                   />
                 </div>
                 <Divider orientation="center" style={{color: "black"}}>
+                  Quantity.
                   <Button
+                    type="link"
+                    disabled={item.quantity === 5 ? true : false}
                     icon={
                       <CaretUpOutlined
-                        style={{fontSize: "20px"}}
+                        style={{fontSize: "25px"}}
                         onClick={() => this.handleIncrease(item.id)}
                       />
                     }
                   />
-                  {`qty. ${item.quantity}`}
-                  <Button
-                    icon={
-                      <CaretDownOutlined
-                        style={{fontSize: "20px"}}
-                        onClick={() => this.handleDecrease(item.id)}
-                      />
-                    }
+                  {`${item.quantity}`}
+                  <CaretDownOutlined
+                    style={{fontSize: "25px"}}
+                    onClick={() => this.handleDecrease(item.id)}
                   />
                 </Divider>
               </div>
@@ -149,7 +153,6 @@ class CartDetails extends React.Component {
     let total = this.props.total;
     const addedItems = this.props.addedItems;
 
-    console.log("All total", total);
     return (
       <div>
         <Layout className="content">
@@ -174,29 +177,31 @@ class CartDetails extends React.Component {
                 <Image preview={false} src={logo} width={"150px"} />
               </Link>
             </div>
-            <Menu mode="horizontal" style={{float: "right"}}>
-              <Menu.Item
-                key="1"
-                icon={<HomeFilled />}
-                onClick={this.redirectLoginHome}
-              >
-                Home
-              </Menu.Item>
-
-              <Menu.Item key="2" icon={<ShoppingCartOutlined />}>
-                <Badge count={addedItems.length} className="head-example">
-                  Cart
-                </Badge>
-              </Menu.Item>
-
-              <Menu.Item
-                key="4"
-                icon={<LogoutOutlined />}
-                onClick={this.redirectLogout}
-              >
-                Logout
-              </Menu.Item>
-            </Menu>
+            <Row>
+              <Col span={10} offset={16}>
+                <Menu mode="horizontal">
+                  <Menu.Item
+                    key="1"
+                    icon={<HomeFilled />}
+                    onClick={this.redirectLoginHome}
+                  >
+                    Home
+                  </Menu.Item>
+                  <Menu.Item key="2" icon={<ShoppingCartOutlined />}>
+                    <Badge count={addedItems.length} className="head-example">
+                      Cart
+                    </Badge>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="3"
+                    icon={<LogoutOutlined />}
+                    onClick={this.redirectLogout}
+                  >
+                    Logout
+                  </Menu.Item>
+                </Menu>
+              </Col>
+            </Row>
           </Header>
           <Content
             style={{
@@ -249,14 +254,27 @@ class CartDetails extends React.Component {
             <div>
               <p>
                 <strong>Total price:</strong> {total} ₹.
-                {this.props.count === 0 ? (
+                {this.props.addedItems.length === 0 ? (
                   ""
                 ) : (
-                  <Link to="/loginhome/checkout/">
-                    <Button type="primary" style={{float: "right"}}>
-                      Place Order
-                    </Button>
-                  </Link>
+                  <div>
+                    <Row>
+                      <Col span={8} offset={16}>
+                        <Alert
+                          message="*User can order 5(nos)items per products.!"
+                          type="warning"
+                          showIcon
+                          closable
+                        />
+
+                        <Link to="/loginhome/checkout/">
+                          <Button type="primary" style={{float: "right"}}>
+                            Place Order
+                          </Button>
+                        </Link>
+                      </Col>
+                    </Row>
+                  </div>
                 )}
               </p>
             </div>
@@ -270,11 +288,14 @@ class CartDetails extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    items: state.products.items,
+    items: Object.values(state.items),
     total: state.total,
     addedItems: state.addedItems,
   };
 };
-export default connect(mapStateToProps, {remove, addQuantity, subQuantity})(
-  CartDetails
-);
+export default connect(mapStateToProps, {
+  remove,
+  addQuantity,
+  subQuantity,
+  fetchItems,
+})(CartDetails);

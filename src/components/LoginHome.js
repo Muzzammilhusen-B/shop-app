@@ -31,8 +31,7 @@ import {
 } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import logo from "./logo.png";
-import api from "../apis/api";
-import {fetchData, addToCart} from "../actions/index";
+import {fetchItems, addToCart, fetchCategory} from "../actions/index";
 import history from "../history";
 
 const {Header, Content} = Layout;
@@ -42,8 +41,10 @@ const {SubMenu} = Menu;
 class LoginHome extends React.Component {
   state = {visible: false, placement: "left"};
   componentDidMount() {
-    this.props.fetchData();
-    console.log("items", this.props.items);
+    this.props.fetchItems();
+    this.props.fetchCategory();
+    const items = this.props.items;
+    console.log("items", items);
   }
   //drawer
   showDrawer = () => {
@@ -74,13 +75,107 @@ class LoginHome extends React.Component {
     };
     success();
   };
+  //admin page
+  redirectAdminPage = () => {
+    history.push("/loginhome/admin");
+  };
+  //render category
+  renderCategory() {
+    return this.props.category.map((item) => {
+      return (
+        <div>
+          <Menu key={item.id}>
+            <Menu.Item
+              key={item.id}
+              id={item.id}
+              // onClick={() => this.handleAllCategory(item.id)}
+            >
+              {item.cat_name}
+            </Menu.Item>
+          </Menu>
+        </div>
+      );
+    });
+  }
+  //render items
+  renderItems() {
+    return this.props.items.map((item) => {
+      return (
+        <Content key={item.id} style={{}}>
+          <Card
+            value={item}
+            id={item.id}
+            hoverable
+            alt={item.name}
+            style={{
+              alignItems: "center",
+              justifyContent: "space-around",
+              maxHeight: "400px",
+              padding: "2%",
+              flex: "0 0 200px",
+              marginTop: "10px",
+              maxWidth: "200px",
+              marginBottom: "10px",
+            }}
+            cover={
+              <Image
+                id={item.id}
+                alt={item.name}
+                src={item.image}
+                value={item}
+                style={{height: "200px"}}
+              />
+            }
+          >
+            <Meta
+              id={item.id}
+              title={`${item.name} (${item.company})`}
+              description={`Price :${item.price} ₹.`}
+              style={{justifyContent: "center"}}
+            />
+            <Divider orientation="center" style={{color: "black"}}>
+              <Tooltip title="Add To Cart" placement="right">
+                <Button
+                  style={{float: "left"}}
+                  value={item.quantity}
+                  onClick={() => this.handleAddToCart(item.id)}
+                  disabled={item.quantity === 5 ? true : ""}
+                >
+                  <PlusCircleTwoTone style={{fontSize: "20px"}} />
+                </Button>
+              </Tooltip>
+            </Divider>
+
+            <Popover
+              placement="bottomRight"
+              title={item.name}
+              content={item.description}
+            >
+              <Tag
+                color="blue"
+                icon={<InfoCircleOutlined />}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Description
+              </Tag>
+            </Popover>
+          </Card>
+        </Content>
+      );
+    });
+  }
   render() {
     const {placement, visible} = this.state;
     const items = this.props.items;
     const category = this.props.category;
+    if (category === undefined) <div>Loading...</div>;
     if (items === undefined) <div>Loading...</div>;
     const addedItems = this.props.addedItems;
-    console.log("addeditems", addedItems.length);
+    // console.log("addeditems", addedItems.length);
 
     return (
       <div>
@@ -110,29 +205,22 @@ class LoginHome extends React.Component {
               <Menu.Item key="0" icon={<HomeFilled />}>
                 Home
               </Menu.Item>
-              <SubMenu
-                key="cat1"
-                title="Categories"
-                icon={<UnorderedListOutlined />}
-              >
-                {category !== undefined ? (
-                  category.map((item) => {
-                    return (
-                      <Menu.Item
-                        key={item.cat_id}
-                        id={item.cat_id}
-                        onClick={() => this.handleAllCategory(item.cat_id)}
-                      >
-                        {item.cat_name}
-                      </Menu.Item>
-                    );
-                  })
-                ) : (
-                  <div>
-                    <Spin tip="Loading..." />
-                  </div>
-                )}
-              </SubMenu>
+              <Menu.Item key="1">
+                <SubMenu
+                  key="2"
+                  title="Categories"
+                  icon={<UnorderedListOutlined />}
+                >
+                  {category !== undefined ? (
+                    this.renderCategory()
+                  ) : (
+                    <div>
+                      {" "}
+                      <Spin tip="Loading..." />
+                    </div>
+                  )}
+                </SubMenu>
+              </Menu.Item>
               <Menu.Item
                 key="10"
                 icon={<ShoppingCartOutlined />}
@@ -142,7 +230,11 @@ class LoginHome extends React.Component {
                   Cart{" "}
                 </Badge>
               </Menu.Item>
-              <Menu.Item key="11" icon={<DashboardOutlined />}>
+              <Menu.Item
+                key="11"
+                icon={<DashboardOutlined />}
+                onClick={this.redirectAdminPage}
+              >
                 Admin
               </Menu.Item>
 
@@ -189,21 +281,10 @@ class LoginHome extends React.Component {
                   onClose={this.onClose}
                 >
                   {category !== undefined ? (
-                    category.map((item) => {
-                      return (
-                        <Menu key={item.cat_id}>
-                          <Menu.Item
-                            key={item.cat_id}
-                            id={item.cat_id}
-                            // onClick={() => this.handleAllCategory(item.cat_id)}
-                          >
-                            {item.cat_name}
-                          </Menu.Item>
-                        </Menu>
-                      );
-                    })
+                    this.renderCategory()
                   ) : (
                     <div>
+                      {" "}
                       <Spin tip="Loading..." />
                     </div>
                   )}
@@ -240,76 +321,10 @@ class LoginHome extends React.Component {
               }}
             >
               {items !== undefined ? (
-                items.map((item) => {
-                  return (
-                    <Content key={item.id} style={{}}>
-                      <Card
-                        value={item}
-                        id={item.id}
-                        hoverable
-                        alt={item.name}
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "space-around",
-                          maxHeight: "400px",
-                          padding: "2%",
-                          flex: "0 0 200px",
-                          marginTop: "10px",
-                          maxWidth: "200px",
-                          marginBottom: "10px",
-                        }}
-                        cover={
-                          <Image
-                            id={item.id}
-                            alt={item.name}
-                            src={item.image}
-                            value={item}
-                            style={{height: "200px"}}
-                          />
-                        }
-                      >
-                        <Meta
-                          id={item.id}
-                          title={`${item.name} (${item.company})`}
-                          description={`Price :${item.price} ₹.`}
-                          style={{justifyContent: "center"}}
-                        />
-                        <Divider orientation="center" style={{color: "black"}}>
-                          <Tooltip title="Add To Cart" placement="right">
-                            <Button
-                              style={{float: "left"}}
-                              value={item.quantity}
-                              onClick={() => this.handleAddToCart(item.id)}
-                              disabled={item.quantity === 5 ? true : ""}
-                            >
-                              <PlusCircleTwoTone style={{fontSize: "20px"}} />
-                            </Button>
-                          </Tooltip>
-                        </Divider>
-
-                        <Popover
-                          placement="bottomRight"
-                          title={item.name}
-                          content={item.description}
-                        >
-                          <Tag
-                            color="blue"
-                            icon={<InfoCircleOutlined />}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            Description
-                          </Tag>
-                        </Popover>
-                      </Card>
-                    </Content>
-                  );
-                })
+                this.renderItems()
               ) : (
                 <div>
+                  {" "}
                   <Spin tip="Loading..." />
                 </div>
               )}
@@ -325,11 +340,12 @@ class LoginHome extends React.Component {
 const mapStateToProps = (state) => {
   console.log("state", state);
   return {
-    products: state.products,
-    items: state.products.items,
-    category: state.products.category,
+    items: Object.values(state.items),
+    category: Object.values(state.category),
     addedItems: state.addedItems,
   };
 };
 
-export default connect(mapStateToProps, {fetchData, addToCart})(LoginHome);
+export default connect(mapStateToProps, {fetchItems, addToCart, fetchCategory})(
+  LoginHome
+);

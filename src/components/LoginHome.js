@@ -24,7 +24,6 @@ import {
   DashboardOutlined,
   LogoutOutlined,
   ShoppingCartOutlined,
-  UnorderedListOutlined,
   PlusCircleTwoTone,
   InfoCircleOutlined,
   FilterTwoTone,
@@ -37,14 +36,13 @@ import history from "../history";
 const {Header, Content} = Layout;
 const {Search} = Input;
 const {Meta} = Card;
-const {SubMenu} = Menu;
 class LoginHome extends React.Component {
   state = {visible: false, placement: "left"};
   componentDidMount() {
     this.props.fetchItems();
     this.props.fetchCategory();
-    const items = this.props.items;
-    console.log("items", items);
+    // const items = this.props.items;
+    // console.log("items", items);
   }
   //drawer
   showDrawer = () => {
@@ -83,7 +81,7 @@ class LoginHome extends React.Component {
   renderCategory() {
     return this.props.category.map((item) => {
       return (
-        <div>
+        <div key={item.id}>
           <Menu key={item.id}>
             <Menu.Item
               key={item.id}
@@ -201,51 +199,39 @@ class LoginHome extends React.Component {
                 <Image preview={false} src={logo} width={"150px"} />
               </Link>
             </div>
-            <Menu mode="horizontal" style={{float: "right"}}>
-              <Menu.Item key="0" icon={<HomeFilled />}>
-                Home
-              </Menu.Item>
-              <Menu.Item key="1">
-                <SubMenu
+            <div style={{float: "right"}}>
+              <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
+                <Menu.Item key="1" icon={<HomeFilled />}>
+                  Home
+                </Menu.Item>
+                <Menu.Item
                   key="2"
-                  title="Categories"
-                  icon={<UnorderedListOutlined />}
+                  icon={<ShoppingCartOutlined />}
+                  onClick={this.rediredtCartPage}
                 >
-                  {category !== undefined ? (
-                    this.renderCategory()
-                  ) : (
-                    <div>
-                      {" "}
-                      <Spin tip="Loading..." />
-                    </div>
-                  )}
-                </SubMenu>
-              </Menu.Item>
-              <Menu.Item
-                key="10"
-                icon={<ShoppingCartOutlined />}
-                onClick={this.rediredtCartPage}
-              >
-                <Badge count={addedItems.length} className="head-example">
-                  Cart{" "}
-                </Badge>
-              </Menu.Item>
-              <Menu.Item
-                key="11"
-                icon={<DashboardOutlined />}
-                onClick={this.redirectAdminPage}
-              >
-                Admin
-              </Menu.Item>
+                  <Badge count={addedItems.length} className="head-example">
+                    Cart{" "}
+                  </Badge>
+                </Menu.Item>
+                <Menu.Item
+                  key="3"
+                  icon={<DashboardOutlined />}
+                  onClick={this.redirectAdminPage}
+                >
+                  Admin
+                </Menu.Item>
 
-              <Menu.Item
-                key="12"
-                icon={<LogoutOutlined />}
-                onClick={this.handleLogOut}
-              >
-                Logout
-              </Menu.Item>
-            </Menu>
+                <Menu.Item
+                  key="4"
+                  icon={<LogoutOutlined />}
+                  onClick={this.handleLogOut}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu>
+            </div>
+            {/* </Col>
+            </Row> */}
           </Header>
           <Layout
             style={{
@@ -257,6 +243,7 @@ class LoginHome extends React.Component {
                 "progid:DXImageTransform.Microsoft.gradient( startColorstr=#E9B7CE, endColorstr=#D3F3F1, GradientType=1 )",
             }}
           >
+            {/* drawer code start */}
             <div
               style={{
                 display: "flex",
@@ -283,10 +270,7 @@ class LoginHome extends React.Component {
                   {category !== undefined ? (
                     this.renderCategory()
                   ) : (
-                    <div>
-                      {" "}
-                      <Spin tip="Loading..." />
-                    </div>
+                    <Spin tip="Loading..." />
                   )}
                 </Drawer>
                 <Search
@@ -302,6 +286,7 @@ class LoginHome extends React.Component {
                 />
               </Space>
             </div>
+            {/* //drawer code end */}
             <div
               style={{
                 background:
@@ -323,10 +308,7 @@ class LoginHome extends React.Component {
               {items !== undefined ? (
                 this.renderItems()
               ) : (
-                <div>
-                  {" "}
-                  <Spin tip="Loading..." />
-                </div>
+                <Spin tip="Loading..." />
               )}
             </div>
           </Layout>

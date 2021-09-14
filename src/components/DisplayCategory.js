@@ -11,6 +11,7 @@ import {
   Form,
   Popconfirm,
   Tooltip,
+  Space,
 } from "antd";
 import logo from "./logo.png";
 // import { Link } from "react-router-dom";
@@ -20,12 +21,14 @@ import {
   AppstoreAddOutlined,
   FileAddOutlined,
   EditTwoTone,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import Footerbar from "./FooterBar";
 import {connect} from "react-redux";
 import history from "../history";
-import {removeCategory, addCategory} from "../actions/index";
+import {removeCategory, addCategory, editCategory} from "../actions/index";
 import {fetchCategory} from "../actions/index";
+import {v4 as uuidv4} from "uuid";
 
 const {Header, Content, Sider} = Layout;
 
@@ -34,7 +37,9 @@ class DisplayCategory extends React.Component {
     cat_name: "",
     id: 0,
     collapsed: false,
-    isModalVisible: false,
+    isModal1Visible: false,
+    isModal2Visible: false,
+    toEdit: [],
   };
   componentDidMount() {
     // const category = this.props.category;
@@ -74,30 +79,17 @@ class DisplayCategory extends React.Component {
   };
   //for modal
   addCategory = () => {
-    this.setState({isModalVisible: true});
+    this.setState({isModal1Visible: true});
   };
-  handleOk = (value) => {
-    // console.log(" okvalue", value);
-    // this.props.addCategory(value);
-    // console.log("to send reducer", this.props.state);
-    const {cat_name, id} = this.state;
-    // const category = this.props.category;
-    // category.push(data);
-    // console.log("to send reducer after push", this.props.state);
-
-    // loadFromLocalStorage();
-    // saveToLocalStorage().category.push(data);
-
-    // category.push(data);
-    const data = {cat_name, id};
+  handleOk1 = () => {
+    const {cat_name} = this.state;
+    const data = {cat_name, id: parseInt(uuidv4())};
     this.props.addCategory(data);
-    // localStorage.setItem("cartState", JSON.stringify(this.props.state));
-
-    this.setState({isModalVisible: false});
+    this.setState({isModal1Visible: false});
   };
 
-  handleCancel = () => {
-    this.setState({isModalVisible: false});
+  handleCancel1 = () => {
+    this.setState({isModal1Visible: false});
   };
   //remove category
   handleRemove = (id) => {
@@ -106,16 +98,35 @@ class DisplayCategory extends React.Component {
   };
   //edit category
   handleEdit = (id) => {
-    this.setState({isModalVisible: true});
+    const category = this.props.category;
+    let selected = category.find((item) => item.id === id);
+    console.log("selected caat id", selected);
+    this.setState({isModal2Visible: true, id, toEdit: selected});
+  };
+  handleOk2 = () => {
+    const {cat_name, id} = this.state;
     const category = this.props.category;
     const toEdit = category.find((item) => item.id === id);
-    console.log("toedit", toEdit);
-    const response = {};
-    this.props.editCategory();
+    console.log("toedit", toEdit, cat_name);
+    const newName =
+      cat_name !== toEdit.cat_name
+        ? (toEdit.cat_name = cat_name)
+        : toEdit.cat_name;
+    const response = {cat_name: newName, id};
+    console.log("toedit 2", response);
+    this.props.editCategory(response);
+
+    this.setState({isModal2Visible: false});
+  };
+
+  handleCancel2 = () => {
+    this.setState({isModal2Visible: false});
   };
   render() {
     const collapsed = this.state.collapsed;
     const category = this.props.category;
+    const {cat_name} = this.state.toEdit;
+    // console.log("category for action", category);
     // console.log(
     //   "Display category log",
     //   category.map((item) => item.id)
@@ -126,43 +137,27 @@ class DisplayCategory extends React.Component {
         key: "cat_name",
         dataIndex: "cat_name",
       },
-      {
-        title: "Category ID",
-        key: "id",
-        dataIndex: "id",
-      },
+
       {
         title: "Action",
         key: "remove",
         dataIndex: "",
-        children: [
-          {
-            title: "Delete",
-            key: "delete",
-            dataIndex: "delete",
-            render: (category) => (
-              <Popconfirm
-                title="Sure to remove?"
-                onConfirm={() => this.handleRemove(category.id)}
-              >
-                <Button danger>Remove</Button>
-              </Popconfirm>
-            ),
-          },
-          {
-            title: "Edit",
-            key: "edit",
-            dataIndex: "edit",
-            render: (category) => (
-              <Tooltip title="Edit category">
-                <EditTwoTone
-                  style={{fontSize: "20px"}}
-                  onClick={() => this.handleEdit(category.id)}
-                />
-              </Tooltip>
-            ),
-          },
-        ],
+        render: (category) => (
+          <Space>
+            <Tooltip title="Edit category">
+              <EditTwoTone
+                style={{fontSize: "20px"}}
+                onClick={() => this.handleEdit(category.id)}
+              />
+            </Tooltip>
+            <Popconfirm
+              title="Sure to remove?"
+              onConfirm={() => this.handleRemove(category.id)}
+            >
+              <DeleteOutlined style={{color: "red", fontSize: "20px"}} />
+            </Popconfirm>
+          </Space>
+        ),
       },
     ];
     return (
@@ -270,31 +265,33 @@ class DisplayCategory extends React.Component {
                   Add Category
                 </Button>
               </div>
-              <Modal
-                title="Add Category"
-                visible={this.state.isModalVisible}
-                onCancel={this.handleCancel}
-                onOk={this.handleOk}
-              >
-                <Form>
-                  <Form.Item
-                    label="Category Name"
-                    value={this.state.cat_name}
-                    name="cat_name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input category name!",
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
+              {/* modal 1 start */}
+              <div>
+                <Modal
+                  title="Add Category"
+                  visible={this.state.isModal1Visible}
+                  onCancel={this.handleCancel1}
+                  onOk={this.handleOk1}
+                >
+                  <Form>
+                    <Form.Item
+                      label="Category Name"
+                      value={this.state.cat_name}
                       name="cat_name"
-                      onChange={this.handleOnChange}
-                    />
-                  </Form.Item>
-                  <Form.Item
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input category name!",
+                        },
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        name="cat_name"
+                        onChange={this.handleOnChange}
+                      />
+                    </Form.Item>
+                    {/* <Form.Item
                     label="Category Id"
                     value={this.state.id}
                     name="id"
@@ -310,9 +307,58 @@ class DisplayCategory extends React.Component {
                       name="id"
                       onChange={this.handleOnChange}
                     />
-                  </Form.Item>
-                </Form>
-              </Modal>
+                  </Form.Item> */}
+                  </Form>
+                </Modal>
+              </div>
+              {/* modal 1 end */}
+              {/* modal 2 start */}
+              <div>
+                <Modal
+                  title="Edit Category"
+                  visible={this.state.isModal2Visible}
+                  onCancel={this.handleCancel2}
+                  onOk={this.handleOk2}
+                >
+                  <Form>
+                    <Form.Item
+                      label="Category Name"
+                      initialValue={cat_name}
+                      name="cat_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input category name!",
+                        },
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        name="cat_name"
+                        onChange={this.handleOnChange}
+                      />
+                    </Form.Item>
+                    {/* <Form.Item
+                    label="Category Id"
+                    value={this.state.id}
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input category Id!",
+                      },
+                    ]}
+                  >
+                    <Input
+                      type="number"
+                      name="id"
+                      onChange={this.handleOnChange}
+                    />
+                  </Form.Item> */}
+                  </Form>
+                </Modal>
+              </div>
+
               <Table
                 rowKey="id"
                 columns={columns}
@@ -329,6 +375,7 @@ class DisplayCategory extends React.Component {
   }
 }
 const mapStateToProps = (state) => {
+  console.log("category", state);
   return {category: Object.values(state.category)};
 };
 
@@ -336,4 +383,5 @@ export default connect(mapStateToProps, {
   removeCategory,
   addCategory,
   fetchCategory,
+  editCategory,
 })(DisplayCategory);

@@ -1,10 +1,10 @@
 // import _ from "lodash";
-import {responsiveArray} from "antd/lib/_util/responsiveObserve";
 import {
   ADD_CATEGORY,
   ADD_PRODUCT,
   ADD_QUANTITY,
   ADD_TO_CART,
+  EDIT_CATEGORY,
   FETCH_CATEGORY,
   FETCH_ITEMS,
   REMOVE_CATEGORY,
@@ -32,9 +32,9 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   //fetch items
   if (action.type === FETCH_ITEMS) {
-    console.log("initial state", state);
+    // console.log("initial state", state);
     let data = action.payload;
-    console.log("redu items", data);
+    // console.log("redu items", data);
     return {
       ...state,
       items: data,
@@ -43,7 +43,7 @@ const reducer = (state = initialState, action) => {
   //fetch CATEGORY
   if (action.type === FETCH_CATEGORY) {
     let data = action.payload;
-    console.log("redu cate", data);
+    // console.log("redu cate", data);
     return {
       ...state,
       category: data,
@@ -58,11 +58,11 @@ const reducer = (state = initialState, action) => {
       addedItem.quantity += 1;
       return {
         ...state,
-        total: parseInt(state.total) + parseInt(addedItem.price),
+        total: state.total + addedItem.price,
       };
     } else {
       addedItem.quantity = 1;
-      let newTotal = parseInt(state.total) + parseInt(addedItem.price);
+      let newTotal = state.total + addedItem.price;
       return {
         ...state,
         addedItems: [...state.addedItems, addedItem],
@@ -72,22 +72,20 @@ const reducer = (state = initialState, action) => {
   }
   //remove from cart
   if (action.type === REMOVE_ITEM) {
-    let itemToRemove = state.addedItems.find((item) => item.id === action.id);
-    let newItems = state.addedItems.filter((item) => item.id !== action.id);
-    let newTotal =
-      parseInt(state.total) -
-      parseInt(itemToRemove.price * itemToRemove.quantity);
+    let itemToRemove = state.addedItems.find((item) => action.id === item.id);
+    let newItems = state.addedItems.filter((item) => action.id !== item.id);
+    let newTotal = state.total - itemToRemove.price * itemToRemove.quantity;
     return {
       ...state,
-      total: newTotal,
       addedItems: newItems,
+      total: newTotal,
     };
   }
   //add quantity
   if (action.type === ADD_QUANTITY) {
     let addedItem = state.items.find((item) => item.id === action.id);
     addedItem.quantity += 1;
-    let newTotal = parseInt(state.total) + parseInt(addedItem.price);
+    let newTotal = state.total + addedItem.price;
     return {
       ...state,
       total: newTotal,
@@ -99,7 +97,7 @@ const reducer = (state = initialState, action) => {
     //if qty=0 then it should remove from cart
     if (addedItem.quantity === 1) {
       let newItems = state.addedItems.filter((item) => item.id !== action.id);
-      let newTotal = parseInt(state.total) - parseInt(addedItem.price);
+      let newTotal = state.total - addedItem.price;
       return {
         ...state,
         addedItems: newItems,
@@ -107,7 +105,7 @@ const reducer = (state = initialState, action) => {
       };
     } else {
       addedItem.quantity -= 1;
-      let newTotal = parseInt(state.total) - parseInt(addedItem.price);
+      let newTotal = state.total - addedItem.price;
       return {
         ...state,
         total: newTotal,
@@ -117,7 +115,7 @@ const reducer = (state = initialState, action) => {
   //remove category
   if (action.type === REMOVE_CATEGORY) {
     let newCategory = state.category.filter((item) => item.id !== action.id);
-    console.log("todel cat", newCategory);
+    // console.log("todel cat", newCategory);
 
     return {
       ...state,
@@ -127,17 +125,23 @@ const reducer = (state = initialState, action) => {
   //add category
   if (action.type === ADD_CATEGORY) {
     let addedCat = action.payload;
-    console.log("added cate", addedCat);
+    // console.log("added cate", addedCat);
     return {
       ...state,
       category: [...state.category, addedCat],
+    };
+  }
+  //edit category
+  if (action.type === EDIT_CATEGORY) {
+    return {
+      ...state,
     };
   }
 
   //remove product
   if (action.type === REMOVE_PRODUCT) {
     let newProduct = state.category.filter((item) => item.id !== action.id);
-    console.log("todel cat", newProduct);
+    // console.log("todel cat", newProduct);
 
     return {
       ...state,
@@ -147,7 +151,7 @@ const reducer = (state = initialState, action) => {
   //add product
   if (action.type === ADD_PRODUCT) {
     let addedPro = action.payload;
-    console.log("added cate", addedPro);
+    // console.log("added cate", addedPro);
     return {
       ...state,
       items: [...state.items, addedPro],

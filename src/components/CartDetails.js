@@ -40,9 +40,7 @@ class CartDetails extends React.Component {
   state = {
     amount: 0,
   };
-  componentDidMount() {
-    this.props.fetchItems();
-  }
+  componentDidMount() {}
   redirectLoginHome = () => {
     history.push("/loginhome");
   };
@@ -252,31 +250,29 @@ class CartDetails extends React.Component {
             </div>
 
             <div>
-              <p>
-                <strong>Total price:</strong> {total} ₹.
-                {this.props.addedItems.length === 0 ? (
-                  ""
-                ) : (
-                  <div>
-                    <Row>
-                      <Col span={8} offset={16}>
-                        <Alert
-                          message="*User can order 5(nos)items per products.!"
-                          type="warning"
-                          showIcon
-                          closable
-                        />
+              <strong>Total price:</strong> {total} ₹.
+              {this.props.addedItems.length === 0 ? (
+                ""
+              ) : (
+                <div>
+                  <Row>
+                    <Col span={8} offset={16}>
+                      <Alert
+                        message="*User can order 5(nos)items per products.!"
+                        type="warning"
+                        showIcon
+                        closable
+                      />
 
-                        <Link to="/loginhome/checkout/">
-                          <Button type="primary" style={{float: "right"}}>
-                            Place Order
-                          </Button>
-                        </Link>
-                      </Col>
-                    </Row>
-                  </div>
-                )}
-              </p>
+                      <Link to="/loginhome/checkout/">
+                        <Button type="primary" style={{float: "right"}}>
+                          Place Order
+                        </Button>
+                      </Link>
+                    </Col>
+                  </Row>
+                </div>
+              )}
             </div>
           </Content>
           {/* footer from reusable component */}
@@ -288,7 +284,8 @@ class CartDetails extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    items: Object.values(state.items),
+    reduxState: state,
+    items: state.items,
     total: state.total,
     addedItems: state.addedItems,
   };

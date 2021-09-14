@@ -17,7 +17,7 @@ import history from "../history";
 //fetch items
 export const fetchItems = () => async (dispatch) => {
   const response = await api.get("/items");
-  console.log("resaction", response.data);
+  // console.log("resaction", response.data);
   dispatch({
     type: FETCH_ITEMS,
     payload: response.data,
@@ -26,7 +26,7 @@ export const fetchItems = () => async (dispatch) => {
 //fetch category
 export const fetchCategory = () => async (dispatch) => {
   const response = await api.get("/category");
-  console.log("resaction", response.data);
+  // console.log("resaction", response.data);
   dispatch({
     type: FETCH_CATEGORY,
     payload: response.data,
@@ -62,7 +62,8 @@ export const addCategory = (data) => async (dispatch) => {
   history.push("/loginhome/admin/category");
 };
 //edit category
-export const editCategory = (id, data) => async (dispatch) => {
+export const editCategory = (data) => async (dispatch) => {
+  const {id} = data;
   const response = await api.patch(`/category/${id}`, data);
   dispatch({type: EDIT_CATEGORY, payload: response.data});
 };

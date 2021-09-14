@@ -73,7 +73,7 @@ class DisplayProduct extends React.Component {
   handleOnChange = (e) => {
     const {name, value} = e.target;
     this.setState({[name]: value});
-    console.log("this dot state", this.state);
+    // console.log("this dot state", this.state);
   };
   handleCategory = () => {
     history.push("/loginhome/admin/category");
@@ -92,11 +92,11 @@ class DisplayProduct extends React.Component {
       this.state;
     const data = {
       categoryName,
-      id: uuidv4(),
+      id: parseInt(uuidv4()),
       name,
       company,
-      price,
-      amount,
+      price: parseInt(price),
+      amount: parseInt(amount),
       description,
       image,
     };
@@ -121,7 +121,7 @@ class DisplayProduct extends React.Component {
     const {
       collapsed,
       categoryName,
-      id,
+      // id,
       company,
       price,
       amount,

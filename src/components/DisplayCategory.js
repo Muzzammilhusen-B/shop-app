@@ -86,6 +86,10 @@ class DisplayCategory extends React.Component {
     const data = {cat_name, id: parseInt(uuidv4())};
     this.props.addCategory(data);
     this.setState({isModal1Visible: false});
+    const success = () => {
+      message.success("Category Added.");
+    };
+    success();
   };
 
   handleCancel1 = () => {
@@ -95,6 +99,10 @@ class DisplayCategory extends React.Component {
   handleRemove = (id) => {
     console.log("click for remove", id);
     this.props.removeCategory(id);
+    const success = () => {
+      message.success("Category removed successfully.");
+    };
+    success();
   };
   //edit category
   handleEdit = (id) => {
@@ -117,6 +125,10 @@ class DisplayCategory extends React.Component {
     this.props.editCategory(response);
 
     this.setState({isModal2Visible: false});
+    const success = () => {
+      message.success("Category edited.");
+    };
+    success();
   };
 
   handleCancel2 = () => {
@@ -126,11 +138,7 @@ class DisplayCategory extends React.Component {
     const collapsed = this.state.collapsed;
     const category = this.props.category;
     const {cat_name} = this.state.toEdit;
-    // console.log("category for action", category);
-    // console.log(
-    //   "Display category log",
-    //   category.map((item) => item.id)
-    // );
+
     const columns = [
       {
         title: "Category Name",
@@ -291,23 +299,6 @@ class DisplayCategory extends React.Component {
                         onChange={this.handleOnChange}
                       />
                     </Form.Item>
-                    {/* <Form.Item
-                    label="Category Id"
-                    value={this.state.id}
-                    name="id"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input category Id!",
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="number"
-                      name="id"
-                      onChange={this.handleOnChange}
-                    />
-                  </Form.Item> */}
                   </Form>
                 </Modal>
               </div>
@@ -338,23 +329,6 @@ class DisplayCategory extends React.Component {
                         onChange={this.handleOnChange}
                       />
                     </Form.Item>
-                    {/* <Form.Item
-                    label="Category Id"
-                    value={this.state.id}
-                    name="id"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input category Id!",
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="number"
-                      name="id"
-                      onChange={this.handleOnChange}
-                    />
-                  </Form.Item> */}
                   </Form>
                 </Modal>
               </div>

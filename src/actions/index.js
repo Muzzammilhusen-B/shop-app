@@ -10,6 +10,11 @@ import {
   EDIT_CATEGORY,
   REMOVE_PRODUCT,
   ADD_PRODUCT,
+  ALLCATEGORY,
+  HOME,
+  EDIT_PRODUCT,
+  SEARCH_ITEM,
+  CHECKOUT,
 } from "./type";
 import api from "../apis/api";
 import history from "../history";
@@ -79,4 +84,32 @@ export const addProduct = (data) => async (dispatch) => {
   const response = await api.post("/items", data);
   dispatch({type: ADD_PRODUCT, payload: response.data});
   history.push("/loginhome/admin/product");
+};
+//edit product
+export const editProduct = (data) => async (dispatch) => {
+  const {id} = data;
+  const response = await api.patch(`/items/${id}`, data);
+  dispatch({type: EDIT_PRODUCT, payload: response.data});
+  history.push("/loginhome/admin/product");
+};
+//handle all categorywise display
+export const allCategory = (id) => async (dispatch) => {
+  const response = await api.get(`/items/`);
+  dispatch({type: ALLCATEGORY, payload: [response.data, id]});
+  history.push("/loginhome");
+};
+//all items on click home display
+export const home = () => async (dispatch) => {
+  const response = await api.get("/items");
+  dispatch({type: HOME, payload: response.data});
+  history.push("/loginhome");
+};
+//search items
+export const searchItem = (value) => async (dispatch) => {
+  const response = await api.get("/items");
+  dispatch({type: SEARCH_ITEM, payload: [response.data, value]});
+};
+//checkout
+export const checkout = () => {
+  return {type: CHECKOUT};
 };

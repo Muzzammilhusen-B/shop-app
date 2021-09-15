@@ -4,12 +4,17 @@ import {
   ADD_PRODUCT,
   ADD_QUANTITY,
   ADD_TO_CART,
+  ALLCATEGORY,
+  CHECKOUT,
   EDIT_CATEGORY,
+  EDIT_PRODUCT,
   FETCH_CATEGORY,
   FETCH_ITEMS,
+  HOME,
   REMOVE_CATEGORY,
   REMOVE_ITEM,
   REMOVE_PRODUCT,
+  SEARCH_ITEM,
   SUB_QUANTITY,
 } from "../actions/type";
 import api from "../apis/api";
@@ -140,7 +145,7 @@ const reducer = (state = initialState, action) => {
 
   //remove product
   if (action.type === REMOVE_PRODUCT) {
-    let newProduct = state.category.filter((item) => item.id !== action.id);
+    let newProduct = state.items.filter((item) => item.id !== action.id);
     // console.log("todel cat", newProduct);
 
     return {
@@ -155,6 +160,68 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       items: [...state.items, addedPro],
+    };
+  }
+  //edit product
+  if (action.type === EDIT_PRODUCT) {
+    return {
+      ...state,
+    };
+  }
+  //specific category display handle
+  if (action.type === ALLCATEGORY) {
+    let selectedCategory = action.payload;
+    console.log("all cat data", selectedCategory[1]);
+    let elCategory = state.category.find(
+      (item) => item.id === selectedCategory[1]
+    );
+    localStorage.setItem("items", JSON.stringify(selectedCategory[0]));
+    const allItems = JSON.parse(localStorage.getItem("items"));
+    // console.log("all items", allItems);
+    let itemsToDisplay = allItems.filter(
+      (item) => item.categoryName === elCategory.cat_name
+    );
+    // console.log("items.display", itemsToDisplay);
+    if (itemsToDisplay.length > 0) {
+      return Object.assign({}, state, {items: itemsToDisplay});
+    } else {
+      return {state, items: allItems};
+    }
+  }
+  //home cliick all items
+  if (action.type === HOME) {
+    const allItems = action.payload;
+    return {...state, items: allItems};
+  }
+  //search items
+  if (action.type === SEARCH_ITEM) {
+    let terms = action.payload;
+    let search = terms[1];
+    console.log("searching", terms);
+    let data = terms[0];
+    let toDisplay = data.filter((item) => {
+      return item.name.toLowerCase().includes(search.toLowerCase());
+    });
+    if (search === "") {
+      return {
+        ...state,
+        items: data,
+      };
+    } else {
+      return {
+        ...state,
+        items: toDisplay,
+      };
+    }
+  }
+  //checout process
+  if (action.type === CHECKOUT) {
+    let newItem = [];
+    let newTotal = 0;
+    return {
+      ...state,
+      addedItems: newItem,
+      total: newTotal,
     };
   }
   //default state return

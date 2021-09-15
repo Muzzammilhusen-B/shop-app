@@ -26,24 +26,40 @@ import {
   ShoppingCartOutlined,
   PlusCircleTwoTone,
   InfoCircleOutlined,
-  FilterTwoTone,
+  FilterOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import logo from "./logo.png";
-import {fetchItems, addToCart, fetchCategory} from "../actions/index";
+import {
+  fetchItems,
+  addToCart,
+  fetchCategory,
+  allCategory,
+  home,
+  searchItem,
+} from "../actions/index";
 import history from "../history";
 
 const {Header, Content} = Layout;
 const {Search} = Input;
 const {Meta} = Card;
 class LoginHome extends React.Component {
-  state = {visible: false, placement: "left"};
+  state = {visible: false, placement: "left", term: ""};
   componentDidMount() {
     this.props.fetchItems();
     this.props.fetchCategory();
     // const items = this.props.items;
     // console.log("items", items);
   }
+  //on change
+  handleOnChange = (e) => {
+    const {value} = e.target.value;
+    if (value === "") {
+      this.props.home();
+    }
+    this.setState({term: value});
+  };
   //drawer
   showDrawer = () => {
     this.setState({visible: true});
@@ -77,6 +93,13 @@ class LoginHome extends React.Component {
   redirectAdminPage = () => {
     history.push("/loginhome/admin");
   };
+  //handle all category
+  handleAllCategory = (id) => {
+    console.log("cat clicked", id);
+    this.props.allCategory(id);
+    this.setState({visible: false});
+  };
+
   //render category
   renderCategory() {
     return this.props.category.map((item) => {
@@ -86,7 +109,7 @@ class LoginHome extends React.Component {
             <Menu.Item
               key={item.id}
               id={item.id}
-              // onClick={() => this.handleAllCategory(item.id)}
+              onClick={() => this.handleAllCategory(item.id)}
             >
               {item.cat_name}
             </Menu.Item>
@@ -166,8 +189,12 @@ class LoginHome extends React.Component {
       );
     });
   }
+  //home
+  handleHome = () => {
+    this.props.home();
+  };
   render() {
-    const {placement, visible} = this.state;
+    const {placement, visible, term} = this.state;
     const items = this.props.items;
     const category = this.props.category;
     if (category === undefined) <div>Loading...</div>;
@@ -201,7 +228,11 @@ class LoginHome extends React.Component {
             </div>
             <div style={{float: "right"}}>
               <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
-                <Menu.Item key="1" icon={<HomeFilled />}>
+                <Menu.Item
+                  key="1"
+                  icon={<HomeFilled />}
+                  onClick={this.handleHome}
+                >
                   Home
                 </Menu.Item>
                 <Menu.Item
@@ -253,8 +284,8 @@ class LoginHome extends React.Component {
             >
               <Space align="end" style={{padding: "20px", float: "right"}}>
                 <Button
-                  icon={<FilterTwoTone style={{fontSize: "15px"}} />}
-                  type="primary"
+                  icon={<FilterOutlined style={{fontSize: "15px"}} />}
+                  type="link"
                   onClick={this.showDrawer}
                 >
                   Categories
@@ -274,15 +305,17 @@ class LoginHome extends React.Component {
                   )}
                 </Drawer>
                 <Search
+                  suffix={<SearchOutlined />}
                   style={{
                     width: "450px",
                   }}
                   maxLength={20}
                   placeholder="Input Search Item Name"
                   allowClear
-                  enterButton="Search"
+                  enterButton="Hit to Search"
                   size="middle"
-                  // onSearch={this.onSearch}
+                  onSearch={this.onSearch}
+                  onChange={this.handleOnChange}
                 />
               </Space>
             </div>
@@ -302,7 +335,7 @@ class LoginHome extends React.Component {
                 alignItems: "center",
 
                 padding: "20px",
-                marginBottom: "10px",
+                marginBottom: "30px",
               }}
             >
               {items !== undefined ? (
@@ -311,9 +344,9 @@ class LoginHome extends React.Component {
                 <Spin tip="Loading..." />
               )}
             </div>
+            <FooterBar />
           </Layout>
         </Layout>
-        <FooterBar />
       </div>
     );
   }
@@ -328,6 +361,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {fetchItems, addToCart, fetchCategory})(
-  LoginHome
-);
+export default connect(mapStateToProps, {
+  fetchItems,
+  addToCart,
+  fetchCategory,
+  allCategory,
+  home,
+  searchItem,
+})(LoginHome);

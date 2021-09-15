@@ -12,11 +12,11 @@ const Footerbar = () => {
           textAlign: "center",
           // alignContent: "end"
           clear: "both",
-          marginTop: "20px",
+          // marginTop: "20px",
           position: "fixed",
           bottom: "0",
           width: "100%",
-          height: "10px",
+          height: "20px",
           justifyContent: "center",
         }}
       >

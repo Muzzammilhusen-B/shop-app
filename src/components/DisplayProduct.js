@@ -12,6 +12,7 @@ import {
   Table,
   Tooltip,
   Popconfirm,
+  Space,
 } from "antd";
 import logo from "./logo.png";
 // import { Link } from "react-router-dom";
@@ -20,14 +21,15 @@ import {
   LogoutOutlined,
   AppstoreAddOutlined,
   FileAddOutlined,
-  // InfoCircleOutlined,
+  EditTwoTone,
+  DeleteOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import Footerbar from "./FooterBar";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import history from "../history";
-import {fetchItems, addProduct, removeProduct} from "../actions";
+import {fetchItems, addProduct, removeProduct, editProduct} from "../actions";
 import {v4 as uuidv4} from "uuid";
 
 const {TextArea} = Input;
@@ -44,10 +46,15 @@ class DisplayProduct extends React.Component {
     description: "",
     image: "",
     collapsed: false,
-    isModalVisible: false,
+    isModal1Visible: false,
+    isModal2Visible: false,
+    selectedItem: [],
   };
   componentDidMount() {
     this.props.fetchItems();
+    console.log("selected item mount", this.state.selectedItem);
+
+    this.setState({selectedItem: this.state.selectedItem});
   }
   componentDidUpdate() {
     // console.log("delete stat", this.props.state);
@@ -84,9 +91,9 @@ class DisplayProduct extends React.Component {
   };
   //add product
   addProduct = () => {
-    this.setState({isModalVisible: true});
+    this.setState({isModal1Visible: true});
   };
-  handleOk = (value) => {
+  handleOk1 = (value) => {
     console.log("value", value);
     const {categoryName, name, company, price, amount, description, image} =
       this.state;
@@ -101,20 +108,83 @@ class DisplayProduct extends React.Component {
       image,
     };
     this.props.addProduct(data);
+    const success = () => {
+      message.success("Product Added.");
+    };
+    success();
 
     // localStorage.setItem("cartState", JSON.stringify(this.props.state));
 
     // this.props.addCategory(id);
-    this.setState({isModalVisible: false});
+    this.setState({isModal1Visible: false});
   };
 
-  handleCancel = () => {
-    this.setState({isModalVisible: false});
+  handleCancel1 = () => {
+    this.setState({isModal1Visible: false});
   };
   //remove product
   handleRemove = (id) => {
     console.log("product id to remove", id);
     this.props.removeProduct(id);
+    const success = () => {
+      message.success("Product removed.");
+    };
+    success();
+  };
+  //handle edit product
+  handleEdit = (id) => {
+    this.setState({isModal2Visible: true, id});
+    const items = this.props.items;
+    const toEdit = items.find((item) => item.id === id);
+    console.log("selected item", toEdit);
+    this.setState({selectedItem: toEdit});
+    console.log("selected item in state", this.state.selectedItem);
+  };
+  handleCancel2 = () => {
+    this.setState({isModal2Visible: false, selectedItem: []});
+  };
+  handleOk2 = () => {
+    const items = this.props.items;
+    const {categoryName, id, price, amount, image, company, description} =
+      this.state;
+    const toEdit = items.find((item) => item.id === id);
+    // console.log("toedit,item", toEdit);
+    const response = {
+      categoryName:
+        categoryName !== toEdit.categoryName
+          ? (toEdit.categoryName = categoryName)
+          : toEdit.categoryName,
+      id,
+      price: price !== toEdit.price ? (toEdit.price = price) : toEdit.price,
+      amount:
+        amount !== toEdit.amount ? (toEdit.amount = amount) : toEdit.amount,
+      image: image !== toEdit.image ? (toEdit.image = image) : toEdit.image,
+      company:
+        company !== toEdit.company
+          ? (toEdit.company = company)
+          : toEdit.company,
+      description:
+        description !== toEdit.description
+          ? (toEdit.description = description)
+          : toEdit.description,
+    };
+    this.props.editProduct(response);
+    const success = () => {
+      message.success("Product Edited.");
+    };
+    success();
+    // const {cat_name, id} = this.state;
+    // const category = this.props.category;
+    // const toEdit = category.find((item) => item.id === id);
+    // console.log("toedit", toEdit, cat_name);
+    // const newName =
+    //   cat_name !== toEdit.cat_name
+    //     ? (toEdit.cat_name = cat_name)
+    //     : toEdit.cat_name;
+    // const response = {cat_name: newName, id};
+    // console.log("toedit 2", response);
+    // this.props.editCategory(response);
+    this.setState({isModal2Visible: false, selectedItem: []});
   };
 
   render() {
@@ -128,6 +198,7 @@ class DisplayProduct extends React.Component {
       description,
       name,
       image,
+      selectedItem,
     } = this.state;
     const items = this.props.items;
     const columns = [
@@ -200,14 +271,30 @@ class DisplayProduct extends React.Component {
 
         dataIndex: "",
         render: (items) => (
-          <Popconfirm
-            title="Sure to remove?"
-            onConfirm={() => this.handleRemove(items.id)}
-          >
-            <Button danger>Remove</Button>
-          </Popconfirm>
-          // <Button onClick={() => this.handleRemove(items.id)}>Remove</Button>
+          <Space>
+            <Tooltip title="Edit Product">
+              <EditTwoTone
+                style={{fontSize: "20px"}}
+                onClick={() => this.handleEdit(items.id)}
+              />
+            </Tooltip>
+            <Popconfirm
+              title="Sure to remove?"
+              onConfirm={() => this.handleRemove(items.id)}
+            >
+              <DeleteOutlined style={{color: "red", fontSize: "20px"}} />
+            </Popconfirm>
+          </Space>
         ),
+        // render: (items) => (
+        //   <Popconfirm
+        //     title="Sure to remove?"
+        //     onConfirm={() => this.handleRemove(items.id)}
+        //   >
+        //     <Button danger>Remove</Button>
+        //   </Popconfirm>
+        //   // <Button onClick={() => this.handleRemove(items.id)}>Remove</Button>
+        // ),
       },
     ];
 
@@ -315,12 +402,12 @@ class DisplayProduct extends React.Component {
                 Add Product
               </Button>
             </div>
-
+            {/* Modal 1 start */}
             <Modal
               title="Add Product"
-              visible={this.state.isModalVisible}
-              onOk={this.handleOk}
-              onCancel={this.handleCancel}
+              visible={this.state.isModal1Visible}
+              onOk={this.handleOk1}
+              onCancel={this.handleCancel1}
             >
               <Form>
                 <Form.Item
@@ -336,19 +423,6 @@ class DisplayProduct extends React.Component {
                 >
                   <Input name="categoryName" onChange={this.handleOnChange} />
                 </Form.Item>
-                {/* <Form.Item
-                  label="Category ID"
-                  value={id}
-                  name="id"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input category id!",
-                    },
-                  ]}
-                >
-                  <Input name="id" onChange={this.handleOnChange} />
-                </Form.Item> */}
                 <Form.Item
                   label="Product Name"
                   name="name"
@@ -450,6 +524,143 @@ class DisplayProduct extends React.Component {
                 </Form.Item>
               </Form>
             </Modal>
+            {/* modal 1 end */}
+            {/* modal 2 start */}
+            <Modal
+              title="Edit Product"
+              visible={this.state.isModal2Visible}
+              onOk={this.handleOk2}
+              onCancel={this.handleCancel2}
+            >
+              <Form>
+                <Form.Item
+                  label="Category Name"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.categoryName
+                  }
+                  name="categoryName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input category name!",
+                    },
+                  ]}
+                >
+                  <Input name="categoryName" onChange={this.handleOnChange} />
+                </Form.Item>
+                <Form.Item
+                  label="Product Name"
+                  name="name"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.name
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input product name!",
+                    },
+                  ]}
+                >
+                  <Input name="name" onChange={this.handleOnChange} />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Product Company"
+                  name="company"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.company
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input company name!",
+                    },
+                  ]}
+                >
+                  <Input name="company" onChange={this.handleOnChange} />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Product Amount"
+                  name="amount"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.amount
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input product amount",
+                    },
+                  ]}
+                >
+                  <Input
+                    name="amount"
+                    type="number"
+                    onChange={this.handleOnChange}
+                  />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Product Price in ₹."
+                  name="price"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.price
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input product price!",
+                    },
+                  ]}
+                >
+                  <Input
+                    name="price"
+                    type="number"
+                    onChange={this.handleOnChange}
+                  />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Product Description"
+                  name="description"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.description
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input product description!",
+                    },
+                  ]}
+                >
+                  <TextArea
+                    rows={6}
+                    name="description"
+                    onChange={this.handleOnChange}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Image"
+                  name="image"
+                  initialValue={
+                    selectedItem === undefined ? "" : selectedItem.image
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please upload Image",
+                    },
+                  ]}
+                >
+                  <Input
+                    name="image"
+                    type="text"
+                    onChange={this.handleOnChange}
+                  />
+                  <p>Or</p>
+                  <Upload name="image" onChange={this.handleOnChange}>
+                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                  </Upload>
+                </Form.Item>
+              </Form>
+            </Modal>
+            {/* Modal 2 end */}
             <Table
               rowKey="id"
               // bordered
@@ -476,4 +687,5 @@ export default connect(mapStateToProps, {
   fetchItems,
   addProduct,
   removeProduct,
+  editProduct,
 })(DisplayProduct);

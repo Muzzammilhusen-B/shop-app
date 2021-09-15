@@ -9,6 +9,8 @@ import CartDetails from "./CartDetails";
 import Admin from "./Admin";
 import DisplayCategory from "./DisplayCategory";
 import DisplayProduct from "./DisplayProduct";
+import Checkout from "./Checkout";
+import Success from "./Success";
 
 const App = () => {
   return (
@@ -19,7 +21,9 @@ const App = () => {
           <Route path="/registration" exact component={Registration} />
           <Route path="/loginhome" exact component={LoginHome} />
           <Route path="/loginhome/cart" exact component={CartDetails} />
+          <Route path="/loginhome/cart/checkout" exact component={Checkout} />
           <Route path="/loginhome/admin" exact component={Admin} />
+          <Route path="/successpage" exact component={Success} />
           <Route
             path="/loginhome/admin/category"
             exact

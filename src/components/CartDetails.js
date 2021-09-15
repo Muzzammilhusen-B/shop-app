@@ -15,7 +15,7 @@ import {
   Badge,
   Row,
   Col,
-  Alert,
+  notification,
 } from "antd";
 import {
   DeleteOutlined,
@@ -48,6 +48,11 @@ class CartDetails extends React.Component {
     history.push("/");
   };
   handleIncrease = (id) => {
+    const items = this.props.addedItems;
+    let selectedId = items.find((item) => item.id === id);
+    if (selectedId === undefined) {
+      notification.error({message: "Go to Home"});
+    }
     this.props.addQuantity(id);
   };
   handleDecrease = (id) => {
@@ -66,6 +71,7 @@ class CartDetails extends React.Component {
       this.props.addedItems.length && this.props.total !== 0 ? (
         this.props.addedItems.map((item) => {
           //   console.log("qunatity", item.quantity);
+          if (item === undefined) return <div>Go To Home</div>;
           return (
             <Card
               key={item.id}
@@ -79,7 +85,7 @@ class CartDetails extends React.Component {
                 padding: "5px",
                 // flex: "0 0 200px",
                 marginTop: "20px",
-                maxWidth: "200px",
+                maxWidth: "220px",
                 // marginBottom: "10px",
               }}
               cover={
@@ -119,6 +125,15 @@ class CartDetails extends React.Component {
                     }
                   />
                   {`${item.quantity}`}
+                  {item.quantity === 5
+                    ? notification.warning({
+                        message: "Information",
+                        description:
+                          "User can oreder 5(nos) of items per product.",
+                        placement: "topLeft",
+                        style: {background: "#F8EA8C"},
+                      })
+                    : ""}
                   <CaretDownOutlined
                     style={{fontSize: "25px"}}
                     onClick={() => this.handleDecrease(item.id)}
@@ -203,8 +218,8 @@ class CartDetails extends React.Component {
           </Header>
           <Content
             style={{
-              height: "relative",
-              marginBottom: "50px",
+              height: addedItems.length === 0 ? "97vh" : "relative",
+              marginBottom: "20px",
               // alignItems: "center",
               padding: "10px",
               background:
@@ -213,71 +228,57 @@ class CartDetails extends React.Component {
                 "progid:DXImageTransform.Microsoft.gradient( startColorstr=#E9B7CE, endColorstr=#D3F3F1, GradientType=1 )",
             }}
           >
-            <h1
-              style={{
-                marginTop: "60px",
-                alignContent: "center",
-              }}
-            >
-              You have ordered
-            </h1>
             <div>
-              <p>
-                <strong>Total price:</strong> {total} ₹.
-                {this.props.count === 0 ? (
+              <h1
+                style={{
+                  marginTop: "60px",
+                  alignItems: "center",
+                }}
+              >
+                You have ordered
+                {/* {addedItems.length !== 0 ? (
+                  <Alert
+                    type="warning"
+                    showIcon
+                    message="User can order 5(nos) of items per products.!"
+                    closable
+                  />
+                ) : (
+                  ""
+                )} */}
+              </h1>
+              <div>
+                <strong>Total price:</strong>{" "}
+                {addedItems.length === 0 ? 0 : total} ₹.
+                {addedItems.length === 0 ? (
                   ""
                 ) : (
-                  <Link to="/loginhome/checkout/">
-                    <Button type="primary" style={{float: "right"}}>
-                      Place Order
-                    </Button>
-                  </Link>
+                  <div style={{float: "right"}}>
+                    <Link to="/loginhome/cart/checkout">
+                      <Button type="primary">Place Order</Button>
+                    </Link>
+                  </div>
                 )}
-              </p>
-            </div>
+              </div>
 
-            <div
-              style={{
-                padding: "20px",
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "space-around",
-                alignItems: "center",
-              }}
-            >
-              {product}
+              <div
+                style={{
+                  maxHeight: addedItems.length === 0 ? "96vh" : "relative",
+                  padding: "20px",
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                {product}
+              </div>
             </div>
-
-            <div>
-              <strong>Total price:</strong> {total} ₹.
-              {this.props.addedItems.length === 0 ? (
-                ""
-              ) : (
-                <div>
-                  <Row>
-                    <Col span={8} offset={16}>
-                      <Alert
-                        message="*User can order 5(nos)items per products.!"
-                        type="warning"
-                        showIcon
-                        closable
-                      />
-
-                      <Link to="/loginhome/checkout/">
-                        <Button type="primary" style={{float: "right"}}>
-                          Place Order
-                        </Button>
-                      </Link>
-                    </Col>
-                  </Row>
-                </div>
-              )}
-            </div>
+            <Footerbar />
           </Content>
           {/* footer from reusable component */}
         </Layout>
-        <Footerbar />
       </div>
     );
   }

@@ -15,7 +15,6 @@ import {
   Space,
 } from "antd";
 import logo from "./logo.png";
-// import { Link } from "react-router-dom";
 import {
   HomeFilled,
   LogoutOutlined,
@@ -34,7 +33,7 @@ import {v4 as uuidv4} from "uuid";
 
 const {TextArea} = Input;
 const {Header, Content, Sider} = Layout;
-// const { Meta } = Card;
+
 class DisplayProduct extends React.Component {
   state = {
     categoryName: "",
@@ -56,10 +55,6 @@ class DisplayProduct extends React.Component {
 
     this.setState({selectedItem: this.state.selectedItem});
   }
-  componentDidUpdate() {
-    // console.log("delete stat", this.props.state);
-    // localStorage.setItem("cartState", JSON.stringify(this.props.state));
-  }
 
   redirectLogout = () => {
     const success = () => {
@@ -80,7 +75,6 @@ class DisplayProduct extends React.Component {
   handleOnChange = (e) => {
     const {name, value} = e.target;
     this.setState({[name]: value});
-    // console.log("this dot state", this.state);
   };
   handleCategory = () => {
     history.push("/loginhome/admin/category");
@@ -113,9 +107,6 @@ class DisplayProduct extends React.Component {
     };
     success();
 
-    // localStorage.setItem("cartState", JSON.stringify(this.props.state));
-
-    // this.props.addCategory(id);
     this.setState({isModal1Visible: false});
   };
 
@@ -148,7 +139,7 @@ class DisplayProduct extends React.Component {
     const {categoryName, id, price, amount, image, company, description} =
       this.state;
     const toEdit = items.find((item) => item.id === id);
-    // console.log("toedit,item", toEdit);
+
     const response = {
       categoryName:
         categoryName !== toEdit.categoryName
@@ -173,17 +164,7 @@ class DisplayProduct extends React.Component {
       message.success("Product Edited.");
     };
     success();
-    // const {cat_name, id} = this.state;
-    // const category = this.props.category;
-    // const toEdit = category.find((item) => item.id === id);
-    // console.log("toedit", toEdit, cat_name);
-    // const newName =
-    //   cat_name !== toEdit.cat_name
-    //     ? (toEdit.cat_name = cat_name)
-    //     : toEdit.cat_name;
-    // const response = {cat_name: newName, id};
-    // console.log("toedit 2", response);
-    // this.props.editCategory(response);
+
     this.setState({isModal2Visible: false, selectedItem: []});
   };
 
@@ -191,7 +172,7 @@ class DisplayProduct extends React.Component {
     const {
       collapsed,
       categoryName,
-      // id,
+
       company,
       price,
       amount,
@@ -209,12 +190,7 @@ class DisplayProduct extends React.Component {
         width: 100,
         fixed: "left",
       },
-      // {
-      //   title: "ID",
-      //   key: "id",
-      //   dataIndex: "id",
-      //   width: 50,
-      // },
+
       {
         title: "Name",
         key: "name",
@@ -286,15 +262,6 @@ class DisplayProduct extends React.Component {
             </Popconfirm>
           </Space>
         ),
-        // render: (items) => (
-        //   <Popconfirm
-        //     title="Sure to remove?"
-        //     onConfirm={() => this.handleRemove(items.id)}
-        //   >
-        //     <Button danger>Remove</Button>
-        //   </Popconfirm>
-        //   // <Button onClick={() => this.handleRemove(items.id)}>Remove</Button>
-        // ),
       },
     ];
 
@@ -330,11 +297,7 @@ class DisplayProduct extends React.Component {
               mode="horizontal"
               style={{background: "white", float: "right"}}
             >
-              <Menu.Item
-                key="701"
-                // onClick={this.redirectLoginHome}
-                icon={<HomeFilled />}
-              >
+              <Menu.Item key="701" icon={<HomeFilled />}>
                 <Link to="/loginhome">Home</Link>
               </Menu.Item>
               <Menu.Item key="702" onClick={this.redirectAdmin}>
@@ -663,8 +626,6 @@ class DisplayProduct extends React.Component {
             {/* Modal 2 end */}
             <Table
               rowKey="id"
-              // bordered
-              // scroll={{ x: 1500, y: 300 }}
               scroll={{y: 450, x: 1000}}
               columns={columns}
               dataSource={items}

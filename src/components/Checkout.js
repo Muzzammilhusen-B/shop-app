@@ -6,7 +6,6 @@ import {
   Modal,
   Form,
   Input,
-  // Space,
   Row,
   Col,
   Button,
@@ -17,7 +16,6 @@ import {
   Space,
   Menu,
   Badge,
-  // InputNumber,
 } from "antd";
 import {
   PlusCircleOutlined,
@@ -35,7 +33,6 @@ import {
 import {Link} from "react-router-dom";
 import logo from "./logo.png";
 import Footerbar from "./FooterBar";
-// import Navbar from "./Navbar";
 import {connect} from "react-redux";
 import history from "../history";
 import {checkout} from "../actions/index";
@@ -59,20 +56,12 @@ class Checkout extends React.Component {
     nameoncard: "",
     cardnumber: "",
   };
-  //   useEffect(() => {
-  //     handleOnChange();
-  //   });
-  //for delivery modal
-  componentDidMount() {
-    // const details = JSON.parse(localStorage.getItem("deliveryState"));
-    // console.log("mounted details", details);
-    // this.setState({ details: details });
 
+  componentDidMount() {
     if (this.props.count === 0) {
       const details = [];
       this.setState({details: details});
       history.push("/loginhome");
-      // localStorage.setItem("deliveryState", JSON.parse(details));
     }
   }
   redirectLogout = () => {
@@ -85,7 +74,6 @@ class Checkout extends React.Component {
     history.push("/loginhome/cart");
   };
   handleDeliveyAdd = () => {
-    // console.log("clicked");
     this.setState({isDelModalvisible: true});
   };
   handleOk = () => {
@@ -100,7 +88,7 @@ class Checkout extends React.Component {
       phone: phone,
       country: country,
     });
-    // console.log("delivey detail", this.state);
+
     localStorage.setItem("deliveryState", JSON.stringify(this.state));
     this.setState({isDelModalvisible: false});
   };
@@ -111,7 +99,6 @@ class Checkout extends React.Component {
   handleCardNumber = (e) => {
     const {value} = e.target;
     this.setState({
-      // nameoncard: value,
       cardnumber: value,
     });
   };
@@ -133,7 +120,6 @@ class Checkout extends React.Component {
     // console.log("checkout total", total);
 
     const {
-      details,
       isDelModalvisible,
       fullname,
       address,
@@ -204,7 +190,6 @@ class Checkout extends React.Component {
         <Layout
           style={{
             height: "100vh",
-            // alignItems: "center",
             padding: "10px",
             background:
               "-webkit-linear-gradient(90deg, hsla(332, 53%, 82%, 1) 0%, hsla(176, 57%, 89%, 1) 100%)",
@@ -302,11 +287,7 @@ class Checkout extends React.Component {
                                 onChange={this.handleOnChange}
                               />
                             </Form.Item>{" "}
-                            <Form.Item
-                              label="Landmark"
-                              //   name="landmark"
-                              value={landmark}
-                            >
+                            <Form.Item label="Landmark" value={landmark}>
                               <Input
                                 placeholder="(Optional)"
                                 name="landmark"
@@ -314,11 +295,7 @@ class Checkout extends React.Component {
                                 onChange={this.handleOnChange}
                               />
                             </Form.Item>{" "}
-                            <Form.Item
-                              label="Country"
-                              // name="country"
-                              value={country}
-                            >
+                            <Form.Item label="Country" value={country}>
                               <strong>India</strong>(Service availble only in
                               india)
                             </Form.Item>{" "}
@@ -362,7 +339,6 @@ class Checkout extends React.Component {
                                   <Input
                                     type="text"
                                     value={nameoncard}
-                                    // onChange={this.handleCardNumber}
                                     placeholder="Name on card"
                                   />
                                 </Form.Item>

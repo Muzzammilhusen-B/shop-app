@@ -16,7 +16,6 @@ import {
   message,
 } from "antd";
 import {
-  // UserOutlined,
   MailOutlined,
   LockOutlined,
   LoginOutlined,
@@ -52,10 +51,9 @@ class LogIn extends React.Component {
 
   //on change event
   handleOnChange = (event) => {
-    // console.log("clicked", event.target);
     const {name, value} = event.target;
     const checkbox = event.target.checked;
-    // console.log("checkbox", checkbox);
+
     const isChecked = checkbox ? true : false;
 
     //switch statement for validation
@@ -104,7 +102,7 @@ class LogIn extends React.Component {
     e.preventDefault();
     const {remember, email, password} = this.state;
     const registered = JSON.parse(localStorage.getItem("registration"));
-    // console.log("regis", registered);
+
     if (registered === null) {
       const warning = () => {
         message.warning("Email not found! Signup First...");
@@ -116,7 +114,7 @@ class LogIn extends React.Component {
       registered.email === email && registered.password === password
         ? true
         : false;
-    // console.log("matched", matched);
+
     if (remember && this.handleValidation(this.state.errors) && matched) {
       this.setState({spin: true});
       const succcess = () => {
@@ -190,11 +188,7 @@ class LogIn extends React.Component {
             <div className="login-form">
               <Title>LogIn</Title>
               <Form layout="vertical" style={{width: "400px"}}>
-                <Form.Item
-                  label="Email"
-                  //   name="email"
-                  rules={[{required: true}]}
-                >
+                <Form.Item label="Email" rules={[{required: true}]}>
                   <Input
                     prefix={<MailOutlined className="site-form-item-icon" />}
                     value={username}
@@ -204,11 +198,7 @@ class LogIn extends React.Component {
                   />
                   <h4 style={{color: "red"}}>{errors["email"]}</h4>
                 </Form.Item>
-                <Form.Item
-                  label="Password"
-                  //   name="password"
-                  rules={[{required: true}]}
-                >
+                <Form.Item label="Password" rules={[{required: true}]}>
                   <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     onChange={this.handleOnChange}

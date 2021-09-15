@@ -12,7 +12,6 @@ import {connect} from "react-redux";
 
 const {Header, Content} = Layout;
 class Success extends React.Component {
-  //handle again buy ..i.e homepage
   handleBuy = () => {
     const {history} = this.props;
     if (history) history.push("/loginhome");
@@ -77,7 +76,6 @@ class Success extends React.Component {
         <Layout
           style={{
             height: "94vh",
-            // alignItems: "center",
             padding: "10px",
             background:
               "-webkit-linear-gradient(90deg, hsla(332, 53%, 82%, 1) 0%, hsla(176, 57%, 89%, 1) 100%)",

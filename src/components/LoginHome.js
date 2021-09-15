@@ -49,8 +49,6 @@ class LoginHome extends React.Component {
   componentDidMount() {
     this.props.fetchItems();
     this.props.fetchCategory();
-    // const items = this.props.items;
-    // console.log("items", items);
   }
   //on change
   handleOnChange = (e) => {
@@ -194,7 +192,7 @@ class LoginHome extends React.Component {
     this.props.home();
   };
   render() {
-    const {placement, visible, term} = this.state;
+    const {placement, visible} = this.state;
     const items = this.props.items;
     const category = this.props.category;
     if (category === undefined) <div>Loading...</div>;
@@ -261,8 +259,6 @@ class LoginHome extends React.Component {
                 </Menu.Item>
               </Menu>
             </div>
-            {/* </Col>
-            </Row> */}
           </Header>
           <Layout
             style={{
@@ -329,7 +325,7 @@ class LoginHome extends React.Component {
                 display: "flex",
                 flexWrap: "wrap",
                 flexDirection: "row",
-                // height: "relative",
+
                 maxWidth: "100%",
                 justifyContent: "space-around",
                 alignItems: "center",

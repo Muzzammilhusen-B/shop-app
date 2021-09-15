@@ -1,4 +1,3 @@
-// import _ from "lodash";
 import {
   ADD_CATEGORY,
   ADD_PRODUCT,

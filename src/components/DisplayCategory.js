@@ -14,7 +14,6 @@ import {
   Space,
 } from "antd";
 import logo from "./logo.png";
-// import { Link } from "react-router-dom";
 import {
   HomeFilled,
   LogoutOutlined,
@@ -42,8 +41,6 @@ class DisplayCategory extends React.Component {
     toEdit: [],
   };
   componentDidMount() {
-    // const category = this.props.category;
-    // console.log("cates", category);
     this.props.fetchCategory();
   }
   redirectLoginHome = () => {

@@ -2,15 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import logo from "./logo.png";
 import Footerbar from "./FooterBar";
-import {
-  // Input,
-  Layout,
-  Menu,
-  // Form, Modal,
-  Image,
-  //  Table,
-  message,
-} from "antd";
+import {Layout, Menu, Image, message} from "antd";
 import "antd/dist/antd.css";
 import {
   AppstoreAddOutlined,
@@ -59,7 +51,6 @@ class Admin extends React.Component {
   handleCancel = () => {
     this.setState({isModalVisible: false});
   };
-  //field change and store
 
   //finish
   handleOnFinish = (value) => {
@@ -121,11 +112,8 @@ class Admin extends React.Component {
             filter:
               "progid:DXImageTransform.Microsoft.gradient( startColorstr=#E9B7CE, endColorstr=#D3F3F1, GradientType=1 )",
             marginTop: "65px",
-            // display: "flex",
-            // flexWrap: "wrap",
-            // flexDirection: "row",
+
             height: "94vh",
-            // maxWidth: "100%",
           }}
         >
           <Sider

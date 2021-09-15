@@ -228,9 +228,7 @@ class Registration extends React.Component {
                 "progid:DXImageTransform.Microsoft.gradient( startColorstr=#E9B7CE, endColorstr=#D3F3F1, GradientType=1 )",
             }}
           >
-            <Content
-            // style={{ marginTop: "60px" }}
-            >
+            <Content>
               <div className="form-layout">
                 <Title>Register</Title>
                 <Form layout="vertical" style={{width: "400px"}}>

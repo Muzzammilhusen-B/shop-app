@@ -30,11 +30,7 @@ import {remove, addQuantity, subQuantity, fetchItems} from "../actions";
 import history from "../history";
 
 const {Meta} = Card;
-const {
-  Header,
-  Content,
-  // Footer,
-} = Layout;
+const {Header, Content} = Layout;
 
 class CartDetails extends React.Component {
   state = {
@@ -70,7 +66,6 @@ class CartDetails extends React.Component {
     let product =
       this.props.addedItems.length && this.props.total !== 0 ? (
         this.props.addedItems.map((item) => {
-          //   console.log("qunatity", item.quantity);
           if (item === undefined) return <div>Go To Home</div>;
           return (
             <Card
@@ -83,10 +78,9 @@ class CartDetails extends React.Component {
                 alignItems: "center",
                 maxHeight: "400px",
                 padding: "5px",
-                // flex: "0 0 200px",
+
                 marginTop: "20px",
                 maxWidth: "220px",
-                // marginBottom: "10px",
               }}
               cover={
                 <Image
@@ -220,7 +214,7 @@ class CartDetails extends React.Component {
             style={{
               height: addedItems.length === 0 ? "97vh" : "relative",
               marginBottom: "20px",
-              // alignItems: "center",
+
               padding: "10px",
               background:
                 "-webkit-linear-gradient(90deg, hsla(332, 53%, 82%, 1) 0%, hsla(176, 57%, 89%, 1) 100%)",
@@ -236,16 +230,6 @@ class CartDetails extends React.Component {
                 }}
               >
                 You have ordered
-                {/* {addedItems.length !== 0 ? (
-                  <Alert
-                    type="warning"
-                    showIcon
-                    message="User can order 5(nos) of items per products.!"
-                    closable
-                  />
-                ) : (
-                  ""
-                )} */}
               </h1>
               <div>
                 <strong>Total price:</strong>{" "}
@@ -277,7 +261,6 @@ class CartDetails extends React.Component {
             </div>
             <Footerbar />
           </Content>
-          {/* footer from reusable component */}
         </Layout>
       </div>
     );

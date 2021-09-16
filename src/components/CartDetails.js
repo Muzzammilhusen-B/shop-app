@@ -16,6 +16,7 @@ import {
   Row,
   Col,
   notification,
+  Space,
 } from "antd";
 import {
   DeleteOutlined,
@@ -26,7 +27,7 @@ import {
   CaretUpOutlined,
 } from "@ant-design/icons";
 import {Link} from "react-router-dom";
-import {remove, addQuantity, subQuantity, fetchItems} from "../actions";
+import {remove, addQuantity, subQuantity, fetchItems, empty} from "../actions";
 import history from "../history";
 
 const {Meta} = Card;
@@ -60,6 +61,9 @@ class CartDetails extends React.Component {
       message.success("Item removed from cart");
     };
     success();
+  };
+  handleEmpty = () => {
+    this.props.empty();
   };
 
   render() {
@@ -238,9 +242,18 @@ class CartDetails extends React.Component {
                   ""
                 ) : (
                   <div style={{float: "right"}}>
-                    <Link to="/loginhome/cart/checkout">
-                      <Button type="primary">Place Order</Button>
-                    </Link>
+                    <Space>
+                      <Link to="/loginhome/cart/checkout">
+                        <Button type="primary">Place Order</Button>
+                      </Link>
+                      <Button
+                        type="primary"
+                        onClick={this.handleEmpty}
+                        icon={<ShoppingCartOutlined />}
+                      >
+                        Empty
+                      </Button>
+                    </Space>
                   </div>
                 )}
               </div>
@@ -279,4 +292,5 @@ export default connect(mapStateToProps, {
   addQuantity,
   subQuantity,
   fetchItems,
+  empty,
 })(CartDetails);

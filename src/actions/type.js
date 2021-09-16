@@ -14,3 +14,4 @@ export const SEARCH_ITEM = "SEARCH_ITEM";
 export const REMOVE_PRODUCT = "REMOVE_PRODUCT";
 export const REMOVE_CATEGORY = "REMOVE_CATEGORY";
 export const CHECKOUT = "CHECKOUT";
+export const EMPTY = "EMPTY";

@@ -15,6 +15,7 @@ import {
   EDIT_PRODUCT,
   SEARCH_ITEM,
   CHECKOUT,
+  EMPTY,
 } from "./type";
 import api from "../apis/api";
 import history from "../history";
@@ -112,4 +113,8 @@ export const searchItem = (value) => async (dispatch) => {
 //checkout
 export const checkout = () => {
   return {type: CHECKOUT};
+};
+//EMPTY CART
+export const empty = () => async (dispatch) => {
+  dispatch({type: EMPTY});
 };

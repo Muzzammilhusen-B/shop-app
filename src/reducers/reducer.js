@@ -7,6 +7,7 @@ import {
   CHECKOUT,
   EDIT_CATEGORY,
   EDIT_PRODUCT,
+  EMPTY,
   FETCH_CATEGORY,
   FETCH_ITEMS,
   HOME,
@@ -221,6 +222,16 @@ const reducer = (state = initialState, action) => {
       ...state,
       addedItems: newItem,
       total: newTotal,
+    };
+  }
+  //empty cart
+  if (action.type === EMPTY) {
+    let emptyItems = [];
+    let emptyTotal = 0;
+    return {
+      ...state,
+      addedItems: emptyItems,
+      total: emptyTotal,
     };
   }
   //default state return

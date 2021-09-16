@@ -16,6 +16,7 @@ import {
   Space,
   Menu,
   Badge,
+  message,
 } from "antd";
 import {
   PlusCircleOutlined,
@@ -89,7 +90,7 @@ class Checkout extends React.Component {
       country: country,
     });
 
-    localStorage.setItem("deliveryState", JSON.stringify(this.state));
+    // localStorage.setItem("deliveryState", JSON.stringify(this.state));
     this.setState({isDelModalvisible: false});
   };
   handleCancel = () => {
@@ -112,6 +113,10 @@ class Checkout extends React.Component {
   handleCheckout = () => {
     this.props.checkout();
     history.push("/successpage");
+    const success = () => {
+      message.success("Your order placed successfully.");
+    };
+    success();
   };
   render() {
     const addedItems = this.props.addedItems;

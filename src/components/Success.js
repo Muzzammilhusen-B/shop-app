@@ -1,5 +1,15 @@
 import React from "react";
-import {Layout, Row, Col, Button, Image, Menu, Badge, Result} from "antd";
+import {
+  Layout,
+  Row,
+  Col,
+  Button,
+  Image,
+  Menu,
+  Badge,
+  Result,
+  Alert,
+} from "antd";
 import {
   HomeFilled,
   ShoppingCartOutlined,
@@ -95,7 +105,13 @@ class Success extends React.Component {
                   Buy Again
                 </Button>,
               ]}
-            />
+            >
+              <Alert
+                message="Information"
+                description={` You have order placed successfully. Save order number for future reference.`}
+                showIcon
+              />
+            </Result>
           </Content>
         </Layout>
         <Footerbar />

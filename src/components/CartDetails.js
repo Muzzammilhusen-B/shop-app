@@ -37,7 +37,7 @@ class CartDetails extends React.Component {
   state = {
     amount: 0,
   };
-  componentDidMount() {}
+  // componentDidMount() {}
   redirectLoginHome = () => {
     history.push("/loginhome");
   };

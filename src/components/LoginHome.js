@@ -195,8 +195,11 @@ class LoginHome extends React.Component {
     const {placement, visible} = this.state;
     const items = this.props.items;
     const category = this.props.category;
-    if (category === undefined) <div>Loading...</div>;
-    if (items === undefined) <div>Loading...</div>;
+    const loading = async () => {
+      return await this.props.state;
+    };
+    if (loading === undefined) return <div>Loading...</div>;
+    // if (items === undefined) <div>Loading...</div>;
     const addedItems = this.props.addedItems;
     // console.log("addeditems", addedItems.length);
 
@@ -308,7 +311,7 @@ class LoginHome extends React.Component {
                   maxLength={20}
                   placeholder="Input Search Item Name"
                   allowClear
-                  enterButton="Hit to Search"
+                  enterButton="Search"
                   size="middle"
                   onSearch={this.onSearch}
                   onChange={this.handleOnChange}
@@ -351,6 +354,7 @@ class LoginHome extends React.Component {
 const mapStateToProps = (state) => {
   console.log("state", state);
   return {
+    state: state,
     items: Object.values(state.items),
     category: Object.values(state.category),
     addedItems: state.addedItems,

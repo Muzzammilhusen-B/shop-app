@@ -321,7 +321,7 @@ class Registration extends React.Component {
                   </Button>
                   <h4>
                     Already have an account?{" "}
-                    <Link to="/loginpage">
+                    <Link to="/loginhome">
                       <u>
                         <LoginOutlined />
                         Login Here!

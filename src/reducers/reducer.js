@@ -200,7 +200,10 @@ const reducer = (state = initialState, action) => {
     console.log("searching", terms);
     let data = terms[0];
     let toDisplay = data.filter((item) => {
-      return item.name.toLowerCase().includes(search.toLowerCase());
+      return (
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.description.toLowerCase().includes(search.toLowerCase())
+      );
     });
     if (search === "") {
       return {
